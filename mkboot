@@ -29,10 +29,16 @@ else
     od="od"
 fi
 
-if [ $(which stat) ]; then
+if [ $(which gstat) ]; then
     stat="gstat"
 else
     stat="stat"
+fi
+
+if [ $(which ggrep) ]; then
+    grep="ggrep"
+else
+    grep="grep"
 fi
 
 toolpath=$($readlink -f $0)
@@ -195,7 +201,7 @@ pout "Unpack & decompress $1 to $2"
 cp -f $1 $tempdir/
 cd $tempdir
 bootimg=$(basename $1)
-offset=$(grep -abo ANDROID! $bootimg | cut -f 1 -d :)
+offset=$($grep -abo ANDROID! $bootimg | cut -f 1 -d :)
 [ -z $offset ] && clean
 if [ $offset -gt 0 ]; then
     dd if=$bootimg of=bootimg bs=$offset skip=1 2>/dev/null
